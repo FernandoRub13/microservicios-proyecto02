@@ -74,7 +74,7 @@ services:
     depends_on:
       - zookeeper
   prometheus:
-    image: prom/prometheus:2.45.2
+    image: prom/prometheus:v2.45.2
     container_name: prometheus
     restart: always
     ports:
@@ -94,5 +94,5 @@ services:
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
-      
+
 
