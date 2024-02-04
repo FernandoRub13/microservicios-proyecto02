@@ -76,7 +76,6 @@ services:
   prometheus:
     image: prom/prometheus:v2.45.2
     container_name: prometheus
-    restart: always
     ports:
       - 9090:9090
     volumes:
@@ -84,7 +83,6 @@ services:
   grafana:
     image: grafana/grafana:10.2.3
     container_name: grafana
-    restart: always
     ports:
       - 3000:3000
     links:
@@ -94,5 +92,10 @@ services:
     environment:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=admin
-
-
+  rabbitmq:
+    image: rabbitmq:3.9-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+      

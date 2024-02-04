@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.msvc.order.orderservice.config.rabbitmq.Producer;
 import com.msvc.order.orderservice.dto.InventarioResponse;
 import com.msvc.order.orderservice.dto.OrderLineItemsDto;
 import com.msvc.order.orderservice.dto.OrderRequest;
@@ -22,8 +23,10 @@ import com.msvc.order.orderservice.repository.OrderRepository;
 import io.micrometer.tracing.Span;
 import io.micrometer.tracing.Tracer;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 
+@Slf4j
 @Service
 @Transactional
 public class OrderService {
@@ -39,6 +42,10 @@ public class OrderService {
 
     @Autowired
     private Tracer tracer;
+
+    @Autowired
+    private Producer producer;
+
 
     // @Transactional(readOnly = true)
     public String placeOrder(OrderRequest orderRequest) {
@@ -77,6 +84,7 @@ public class OrderService {
                     .allMatch(InventarioResponse::isInStock);
                 if (allProductosInStock) {
                     orderRepository.save(order);
+                    enviarMensajeConRabbitMQ("Notificacion con RabbitMQ, Pedido realizado con exito");
                     kafkaTemplate.send("notificationTopic", new OrderPlacedEvent(order.getNumeroPedido()).toString());
                     return "Orden realizada con exito";
                 } else {
@@ -89,6 +97,11 @@ public class OrderService {
             inventarioServiceLookup.end();
         }
 
+    }
+
+    private void enviarMensajeConRabbitMQ(String message) {
+        log.info("El mensaje ha sido enviado a la cola de RabbitMQ");
+        producer.send(message);
     }
 
     private OrderLineItems mapToEntity(OrderLineItemsDto orderLineItemsDto) {

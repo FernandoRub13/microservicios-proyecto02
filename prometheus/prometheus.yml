@@ -5,25 +5,25 @@ scrape_configs:
   - job_name: 'producto-service'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: ['localhost:8087']
+      - targets: ['192.168.1.85:8087'] #Cambiar por la IP del servidor o máquina local
         labels:
           application: 'Producto Service Application'
-    - job_name: 'order-service'
+  - job_name: 'order-service'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: ['localhost:8089']
+      - targets: ['192.168.1.85:8089']
         labels:
           application: 'Order Service Application'
-    - job_name: 'inventario-service'
+  - job_name: 'inventario-service'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: ['localhost:8082']
+      - targets: ['192.168.1.85:8082']
         labels:
           application: 'Inventario Service Application'
-    - job_name: 'notification-service'
+  - job_name: 'notification-service'
     metrics_path: '/actuator/prometheus'
     static_configs:
-      - targets: ['localhost:8086']
+      - targets: ['192.168.1.85:8086']
         labels:
           application: 'Notification Service Application'
 
